@@ -40,7 +40,7 @@ spring.datasource.password=admin
 
 ### 2. Levantar el Proyecto
 
-Abre una terminal en la raíz del proyecto (`d:\Workspace\utp\EduTrack`) y ejecuta el siguiente comando:
+Abre una terminal en la raíz del proyecto y ejecuta el siguiente comando:
 
 **En Windows (PowerShell/CMD):**
 ```bash
