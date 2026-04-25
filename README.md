@@ -57,7 +57,7 @@ CREATE DATABASE edutrack;
 
 ### 3️⃣ Iniciar la Aplicación
 
-Abre tu terminal en la carpeta principal del proyecto (`d:\Workspace\utp\EduTrack`) y ejecuta el *Maven Wrapper*:
+Abre tu terminal en la carpeta principal del proyecto y ejecuta el *Maven Wrapper*:
 
 **En Windows:**
 ```powershell
