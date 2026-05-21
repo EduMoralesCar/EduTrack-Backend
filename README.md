@@ -1,7 +1,7 @@
 <div align="center">
   
-# 🎓 EduTrack
-### Sistema Integral de Gestión Académica (SIGA)
+# 🎓 EduTrack - Backend API
+### Control Académico Centralizado - Entrega Actual (RF & RNF)
 
 <br/>
 
@@ -12,69 +12,58 @@
 
 </div>
 
-<br/>
+---
 
-## 📝 Sobre el Proyecto
+## 📋 Requerimientos Funcionales Entregados (RF)
 
-**EduTrack** es una plataforma moderna de control académico desarrollada para gestionar todas las operaciones educativas de una institución. Permite administrar de forma centralizada la información académica (estudiantes, profesores, cursos, asistencias y calificaciones) asegurando un rendimiento óptimo gracias a su arquitectura limpia y escalable.
+Esta entrega cubre la automatización y control administrativo de accesos, cursos, secciones y matrículas académicas:
+
+*   **RF01 - Gestión de Usuarios:**
+    *   *Descripción:* CRUD administrativo para control de cuentas académicas.
+    *   *Endpoint base:* `GET | POST | PUT | DELETE /api/users`
+    *   *Permisos:* Restringido exclusivamente al rol `ADMIN`.
+*   **RF02 - Autenticación y Sesión:**
+    *   *Descripción:* Inicio de sesión seguro y validación de perfiles activos.
+    *   *Endpoints:* `POST /api/auth/login` (público) y `GET /api/auth/me` (requiere token).
+    *   *Permisos:* Público para login; lectura protegida para cualquier usuario autenticado.
+*   **RF03 - Gestión de Cursos (Catálogo):**
+    *   *Descripción:* CRUD completo de materias (código, créditos, silabo).
+    *   *Endpoint base:* `GET | POST | PUT | DELETE /api/courses`
+    *   *Permisos:* Escritura (`POST/PUT/DELETE`) para `ADMIN`. Lectura general (`GET`) para `ADMIN`, `TEACHER` y `STUDENT`.
+*   **RF04 - Secciones y Matrícula Estudiantil:**
+    *   *Descripción:* Apertura de secciones por período y matrícula de alumnos en aulas virtuales.
+    *   *Endpoints:* 
+        *   Secciones: `GET | POST | PUT /api/sections`
+        *   Matrículas: `GET /api/enrollments/section/{id}` y `POST | DELETE /api/enrollments`
+    *   *Permisos:* Matrícula activa restringida a `ADMIN`. Lectura de padrones para `ADMIN` y `TEACHER`.
+*   **RF05 - Asignación Docente:**
+    *   *Descripción:* Vinculación de profesores titulares a secciones específicas.
+    *   *Endpoint:* `PUT /api/sections/{id}/teacher`
+    *   *Permisos:* Restringido exclusivamente al rol `ADMIN`.
 
 ---
 
-## 🏗️ Arquitectura del Sistema
+## 🔒 Requerimientos No Funcionales Clave (RNF)
 
-El proyecto sigue una **arquitectura N-capas** basada en los principios de diseño de Spring Boot, lo que garantiza bajo acoplamiento y alta cohesión:
-
-- 🌐 **Web (`/web/controller`)**: Controladores REST y endpoints HTTP.
-- ⚙️ **Domain (`/domain/service`)**: Reglas y lógica de negocio principal.
-- 📦 **Domain (`/domain/dto`)**: Objetos de transferencia de datos.
-- 💾 **Persistance (`/domain/repository`)**: Interfaces de acceso a datos de Spring Data JPA.
-- 🗄️ **Persistance (`/persistance/entity`)**: Modelos que mapean las tablas en PostgreSQL.
-
----
-
-## 🚀 Guía de Instalación Rápida
-
-Sigue estos pasos para levantar el entorno de desarrollo en tu máquina local.
-
-### 1️⃣ Requisitos Previos
-
-Asegúrate de tener instaladas las siguientes herramientas:
-
-* ☕ [JDK 21](https://jdk.java.net/21/)
-* 🐘 [PostgreSQL](https://www.postgresql.org/download/)
-* 🧩 Un IDE moderno (IntelliJ IDEA, VS Code, o Eclipse)
-
-### 2️⃣ Configuración de Base de Datos
-
-Abre tu gestor de base de datos preferido (DBeaver, pgAdmin, o consola `psql`) y ejecuta:
-
-```sql
-CREATE DATABASE edutrack;
-```
-
-> [!IMPORTANT]  
-> **Credenciales por defecto:** El proyecto buscará por defecto el usuario `postgres` y la contraseña `admin` en el puerto `5432`. Puedes modificarlas en el archivo `src/main/resources/application.properties` si tu configuración local es distinta.
-
-### 3️⃣ Iniciar la Aplicación
-
-Abre tu terminal en la carpeta principal del proyecto y ejecuta el *Maven Wrapper*:
-
-**En Windows:**
-```powershell
-.\mvnw spring-boot:run
-```
-
-**En Linux / macOS:**
-```bash
-./mvnw spring-boot:run
-```
-
-<br/>
-
-> [!TIP]
-> 💡 **Auto-creación de tablas:** Una vez iniciado, Spring Boot creará automáticamente todas las tablas relacionales en la base de datos gracias a la configuración de `hibernate.ddl-auto=update`.
+*   **RNF02 - Control de Acceso por Roles (RBAC):**
+    *   Seguridad basada en metodologías JWT robustas. Anotaciones `@PreAuthorize` en controladores controlando los privilegios de los perfiles `ADMIN`, `TEACHER` y `STUDENT`.
+*   **RNF06 - Arquitectura DTO (Data Transfer Objects):**
+    *   Aislamiento total del modelo de datos de la base de datos hacia el exterior. Mappings de negocio eficientes que previenen overhead de red y exposición accidental de datos sensibles.
+*   **RNF07 - Integración y Persistencia (PostgreSQL):**
+    *   Integridad referencial a nivel de base de datos relacional PostgreSQL con constraints estrictos de claves foráneas y cascadas administradas por Hibernate.
 
 ---
-<div align="center">
-  <p>Construido con ❤️ para la gestión académica</p>
-</div>
+
+## 🛠️ Ejecución y Pruebas Rápidas
+
+1.  **Levantar el Servidor:**
+    ```powershell
+    .\mvnw spring-boot:run
+    ```
+    *(Activo en el puerto `8081` para evitar colisiones locales).*
+2.  **Verificación de API (Swagger UI):**
+    *   [http://localhost:8081/swagger-ui/index.html](http://localhost:8081/swagger-ui/index.html)
+3.  **Cuentas de Bootstrap Integradas:**
+    *   🔑 **Administrador:** `JUAN PABLO` / `Admin123!`
+    *   🔑 **Docente:** `FERMIN LOPEZ` / `Docente123!`
+    *   🔑 **Estudiante:** `EDU MORALES` / `Estudiante123!`
