@@ -7,6 +7,8 @@ import lombok.Data;
 
 @Data
 @Builder
+@lombok.NoArgsConstructor
+@lombok.AllArgsConstructor
 @Schema(description = "Usuario (sin contraseña)")
 public class UserDTO {
 
@@ -25,3 +27,4 @@ public class UserDTO {
     @Schema(description = "Usuario activo", example = "true")
     private boolean active;
 }
+

@@ -6,6 +6,8 @@ import lombok.Data;
 
 @Data
 @Builder
+@lombok.NoArgsConstructor
+@lombok.AllArgsConstructor
 @Schema(description = "Curso académico")
 public class CourseDTO {
 
@@ -24,3 +26,4 @@ public class CourseDTO {
     @Schema(example = "4")
     private Integer credits;
 }
+
