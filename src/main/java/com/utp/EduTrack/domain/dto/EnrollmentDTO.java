@@ -7,6 +7,8 @@ import lombok.Data;
 
 @Data
 @Builder
+@lombok.NoArgsConstructor
+@lombok.AllArgsConstructor
 @Schema(description = "Matrícula de un estudiante en una sección")
 public class EnrollmentDTO {
 
@@ -31,3 +33,4 @@ public class EnrollmentDTO {
     @Schema(example = "ENROLLED")
     private EnrollmentStatus status;
 }
+

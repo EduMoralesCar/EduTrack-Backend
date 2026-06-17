@@ -6,6 +6,8 @@ import lombok.Data;
 
 @Data
 @Builder
+@lombok.NoArgsConstructor
+@lombok.AllArgsConstructor
 @Schema(description = "Sección de un curso")
 public class SectionDTO {
 
@@ -33,3 +35,4 @@ public class SectionDTO {
     @Schema(example = "A")
     private String code;
 }
+
