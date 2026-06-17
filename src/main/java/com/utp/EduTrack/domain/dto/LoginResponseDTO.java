@@ -7,6 +7,8 @@ import lombok.Data;
 
 @Data
 @Builder
+@lombok.NoArgsConstructor
+@lombok.AllArgsConstructor
 @Schema(description = "Respuesta de login con token JWT y datos del usuario")
 public class LoginResponseDTO {
 
@@ -25,3 +27,4 @@ public class LoginResponseDTO {
     @Schema(description = "Rol del usuario autenticado", example = "ADMIN")
     private Role role;
 }
+
