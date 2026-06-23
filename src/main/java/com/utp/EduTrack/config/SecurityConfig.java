@@ -59,7 +59,9 @@ public class SecurityConfig {
                 "http://localhost:3000",
                 "http://localhost:5173",
                 "http://localhost:8080",
-                "http://localhost:8081"
+                "http://localhost:8081",
+                "http://localhost",
+                "capacitor://localhost"
         ));
         configuration.setAllowedMethods(java.util.List.of("GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH"));
         configuration.setAllowedHeaders(java.util.List.of("Authorization", "Content-Type", "Cache-Control", "Accept", "Origin"));

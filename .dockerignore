@@ -1,0 +1,12 @@
+target/
+.git/
+.mvn/
+mvnw
+mvnw.cmd
+Dockerfile
+.dockerignore
+HELP.md
+README.md
+edutrack_backup.sql
+seed.sql
+uploads/
