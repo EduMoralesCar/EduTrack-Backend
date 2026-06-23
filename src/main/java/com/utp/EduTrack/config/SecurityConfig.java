@@ -55,13 +55,11 @@ public class SecurityConfig {
     @Bean
     public org.springframework.web.cors.CorsConfigurationSource corsConfigurationSource() {
         org.springframework.web.cors.CorsConfiguration configuration = new org.springframework.web.cors.CorsConfiguration();
-        configuration.setAllowedOrigins(java.util.List.of(
-                "http://localhost:3000",
-                "http://localhost:5173",
-                "http://localhost:8080",
-                "http://localhost:8081",
+        configuration.setAllowedOriginPatterns(java.util.List.of(
+                "http://localhost:[*]",
                 "http://localhost",
-                "capacitor://localhost"
+                "capacitor://localhost",
+                "https://*.onrender.com"
         ));
         configuration.setAllowedMethods(java.util.List.of("GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH"));
         configuration.setAllowedHeaders(java.util.List.of("Authorization", "Content-Type", "Cache-Control", "Accept", "Origin"));
