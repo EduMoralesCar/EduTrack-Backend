@@ -14,4 +14,4 @@ COPY --from=build /app/target/EduTrack-0.0.1-SNAPSHOT.jar app.jar
 # Create uploads directory for academic materials
 RUN mkdir -p uploads
 EXPOSE 8081
-ENTRYPOINT ["java", "-jar", "app.jar"]
+ENTRYPOINT ["java", "-XX:+UseSerialGC", "-Xss512k", "-XX:MaxRAM=400m", "-Xmx350m", "-jar", "app.jar"]
