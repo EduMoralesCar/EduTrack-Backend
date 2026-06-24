@@ -59,6 +59,8 @@ public class SecurityConfig {
         configuration.setAllowedOriginPatterns(java.util.List.of(
                 "http://localhost:[*]",
                 "http://localhost",
+                "https://localhost:[*]",
+                "https://localhost",
                 "capacitor://localhost",
                 "https://*.onrender.com"
         ));
