@@ -50,6 +50,7 @@ public class AssignmentService {
                 .category(dto.getCategory())
                 .description(dto.getDescription())
                 .instructionsFilePath(instructionsPath)
+                .maxAttempts(dto.getMaxAttempts() != null ? dto.getMaxAttempts() : 1)
                 .section(section)
                 .build();
 
@@ -57,6 +58,7 @@ public class AssignmentService {
         dto.setId(saved.getId());
         dto.setDescription(saved.getDescription());
         dto.setInstructionsFilePath(normalizeFilePath(saved.getInstructionsFilePath()));
+        dto.setMaxAttempts(saved.getMaxAttempts());
         return dto;
     }
 
@@ -72,6 +74,7 @@ public class AssignmentService {
                         .category(a.getCategory())
                         .description(a.getDescription())
                         .instructionsFilePath(normalizeFilePath(a.getInstructionsFilePath()))
+                        .maxAttempts(a.getMaxAttempts())
                         .sectionId(a.getSection().getId())
                         .build())
                 .collect(Collectors.toList());
@@ -86,6 +89,13 @@ public class AssignmentService {
 
         if (LocalDateTime.now().isAfter(assignment.getEndDate())) {
             throw new BusinessException("El plazo para esta tarea ha expirado.");
+        }
+
+        // Validate submission attempts limit
+        int maxAttempts = assignment.getMaxAttempts() != null ? assignment.getMaxAttempts() : 1;
+        int currentAttempts = submissionRepository.countByAssignmentIdAndStudentId(assignmentId, studentId);
+        if (currentAttempts >= maxAttempts) {
+            throw new BusinessException("Has alcanzado el límite de intentos permitidos para esta evaluación (" + maxAttempts + ").");
         }
 
         String filePath = fileStorageService.storeFile(file);
@@ -107,6 +117,45 @@ public class AssignmentService {
                 .submissionDate(saved.getSubmissionDate())
                 .filePath(normalizeFilePath(saved.getFilePath()))
                 .studentComment(saved.getStudentComment())
+                .build();
+    }
+
+    @Transactional
+    public AssignmentDTO updateAssignment(Long id, AssignmentDTO dto, MultipartFile file) {
+        Assignment assignment = assignmentRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Assignment not found"));
+
+        assignment.setName(dto.getName());
+        assignment.setType(dto.getType());
+        assignment.setStartDate(dto.getStartDate());
+        assignment.setEndDate(dto.getEndDate());
+        assignment.setWeekNumber(dto.getWeekNumber());
+        assignment.setCategory(dto.getCategory());
+        assignment.setDescription(dto.getDescription());
+        
+        if (dto.getMaxAttempts() != null) {
+            assignment.setMaxAttempts(dto.getMaxAttempts());
+        }
+
+        if (file != null && !file.isEmpty()) {
+            String instructionsPath = fileStorageService.storeFile(file);
+            assignment.setInstructionsFilePath(instructionsPath);
+        }
+
+        Assignment saved = assignmentRepository.save(assignment);
+        
+        return AssignmentDTO.builder()
+                .id(saved.getId())
+                .name(saved.getName())
+                .type(saved.getType())
+                .startDate(saved.getStartDate())
+                .endDate(saved.getEndDate())
+                .weekNumber(saved.getWeekNumber())
+                .category(saved.getCategory())
+                .description(saved.getDescription())
+                .instructionsFilePath(normalizeFilePath(saved.getInstructionsFilePath()))
+                .maxAttempts(saved.getMaxAttempts())
+                .sectionId(saved.getSection().getId())
                 .build();
     }
 

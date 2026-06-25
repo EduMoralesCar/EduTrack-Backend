@@ -34,6 +34,9 @@ public class AssignmentDTO {
     private String description;
     private String instructionsFilePath;
 
+    @Schema(description = "Límite de intentos permitidos", example = "3")
+    private Integer maxAttempts;
+
     @Schema(example = "1")
     private Long sectionId;
 }
