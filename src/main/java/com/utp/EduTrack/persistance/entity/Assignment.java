@@ -42,6 +42,13 @@ public class Assignment {
     @Column(name = "instructions_file_path", length = 500)
     private String instructionsFilePath;
 
+    @Column(name = "max_attempts")
+    private Integer maxAttempts;
+
+    public Integer getMaxAttempts() {
+        return maxAttempts != null ? maxAttempts : 1;
+    }
+
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "section_id", nullable = false)
     private Section section;

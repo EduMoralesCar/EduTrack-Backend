@@ -35,6 +35,16 @@ public class AssignmentController {
         return new ResponseEntity<>(assignmentService.createAssignment(dto, file), HttpStatus.CREATED);
     }
 
+    @PutMapping("/{id}")
+    @PreAuthorize("hasAnyRole('TEACHER', 'ADMIN')")
+    @Operation(summary = "Actualizar evaluación", description = "Actualiza los detalles de una evaluación existente. Accesible por DOCENTE y ADMIN.")
+    public ResponseEntity<AssignmentDTO> updateAssignment(
+            @PathVariable Long id,
+            @ModelAttribute AssignmentDTO dto,
+            @RequestParam(value = "file", required = false) MultipartFile file) {
+        return ResponseEntity.ok(assignmentService.updateAssignment(id, dto, file));
+    }
+
     @GetMapping("/section/{sectionId}")
     @PreAuthorize("hasAnyRole('TEACHER', 'ADMIN', 'STUDENT')")
     @Operation(summary = "Obtener evaluaciones por sección", description = "Lista todas las evaluaciones de una sección. Accesible por todos.")
