@@ -102,6 +102,16 @@ public class AttendanceService {
         
         justification.setStatus(status);
         justificationRepository.save(justification);
+
+        if (status == JustificationStatus.APROBADO) {
+            Attendance attendance = justification.getAttendance();
+            attendance.setStatus(com.utp.EduTrack.persistance.entity.AttendanceStatus.JUSTIFICADO);
+            attendanceRepository.save(attendance);
+        } else if (status == JustificationStatus.RECHAZADO) {
+            Attendance attendance = justification.getAttendance();
+            attendance.setStatus(com.utp.EduTrack.persistance.entity.AttendanceStatus.AUSENTE);
+            attendanceRepository.save(attendance);
+        }
     }
 
     @Transactional(readOnly = true)
@@ -111,14 +121,49 @@ public class AttendanceService {
         boolean isStudent = auth != null && auth.getAuthorities().stream()
                 .anyMatch(a -> a.getAuthority().equals("ROLE_STUDENT"));
 
-        return attendanceRepository.findBySectionId(sectionId).stream()
+        List<Attendance> attendances = attendanceRepository.findBySectionId(sectionId).stream()
                 .filter(a -> !isStudent || a.getStudent().getUsername().equalsIgnoreCase(currentUsername))
-                .map(a -> AttendanceDTO.builder()
-                        .id(a.getId())
-                        .sectionId(a.getSection().getId())
-                        .studentId(a.getStudent().getId())
-                        .date(a.getDate())
-                        .status(a.getStatus())
+                .collect(Collectors.toList());
+
+        List<Long> attendanceIds = attendances.stream().map(Attendance::getId).collect(Collectors.toList());
+        java.util.Map<Long, AttendanceJustification> justificationMap = new java.util.HashMap<>();
+        if (!attendanceIds.isEmpty()) {
+            List<AttendanceJustification> justifications = justificationRepository.findByAttendanceIdIn(attendanceIds);
+            for (AttendanceJustification j : justifications) {
+                justificationMap.put(j.getAttendance().getId(), j);
+            }
+        }
+
+        return attendances.stream()
+                .map(a -> {
+                    AttendanceJustification j = justificationMap.get(a.getId());
+                    return AttendanceDTO.builder()
+                            .id(a.getId())
+                            .sectionId(a.getSection().getId())
+                            .studentId(a.getStudent().getId())
+                            .date(a.getDate())
+                            .status(a.getStatus())
+                            .justificationId(j != null ? j.getId() : null)
+                            .justificationStatus(j != null ? j.getStatus() : null)
+                            .justificationReason(j != null ? j.getReason() : null)
+                            .justificationProofFilePath(j != null ? j.getProofFilePath() : null)
+                            .build();
+                })
+                .collect(Collectors.toList());
+    }
+
+    @Transactional(readOnly = true)
+    public List<AttendanceJustificationDTO> getSectionJustifications(Long sectionId) {
+        return justificationRepository.findByAttendanceSectionId(sectionId).stream()
+                .map(j -> AttendanceJustificationDTO.builder()
+                        .id(j.getId())
+                        .attendanceId(j.getAttendance().getId())
+                        .reason(j.getReason())
+                        .proofFilePath(j.getProofFilePath())
+                        .status(j.getStatus())
+                        .submittedAt(j.getSubmittedAt())
+                        .studentUsername(j.getAttendance().getStudent().getUsername())
+                        .attendanceDate(j.getAttendance().getDate())
                         .build())
                 .collect(Collectors.toList());
     }

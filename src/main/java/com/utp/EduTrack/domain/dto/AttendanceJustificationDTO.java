@@ -3,6 +3,7 @@ package com.utp.EduTrack.domain.dto;
 import com.utp.EduTrack.persistance.entity.JustificationStatus;
 import lombok.Builder;
 import lombok.Data;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @Data
@@ -16,5 +17,7 @@ public class AttendanceJustificationDTO {
     private String proofFilePath;
     private JustificationStatus status;
     private LocalDateTime submittedAt;
+    private String studentUsername;
+    private LocalDate attendanceDate;
 }
 
