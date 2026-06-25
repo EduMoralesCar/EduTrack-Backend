@@ -9,4 +9,6 @@ import java.util.List;
 @Repository
 public interface AttendanceJustificationRepository extends JpaRepository<AttendanceJustification, Long> {
     List<AttendanceJustification> findByAttendanceId(Long attendanceId);
+    List<AttendanceJustification> findByAttendanceIdIn(List<Long> attendanceIds);
+    List<AttendanceJustification> findByAttendanceSectionId(Long sectionId);
 }

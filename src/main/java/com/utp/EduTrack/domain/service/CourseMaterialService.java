@@ -90,6 +90,31 @@ public class CourseMaterialService {
         materialRepository.delete(material);
     }
 
+    @Transactional
+    public CourseMaterialDTO updateMaterial(Long materialId, String title, MultipartFile file) {
+        CourseMaterial material = materialRepository.findById(materialId)
+                .orElseThrow(() -> new ResourceNotFoundException("Material no encontrado"));
+
+        material.setTitle(title);
+        if (file != null && !file.isEmpty()) {
+            String filePath = fileStorageService.storeFile(file);
+            material.setFilePath(filePath);
+        }
+        material.setUploadDate(LocalDateTime.now());
+
+        CourseMaterial saved = materialRepository.save(material);
+
+        return CourseMaterialDTO.builder()
+                .id(saved.getId())
+                .title(saved.getTitle())
+                .filePath(normalizeFilePath(saved.getFilePath()))
+                .weekNumber(saved.getWeekNumber())
+                .uploadDate(saved.getUploadDate().toString())
+                .sectionId(saved.getSection().getId())
+                .visible(saved.getVisible())
+                .build();
+    }
+
     private String normalizeFilePath(String path) {
         if (path == null) return null;
         String normalized = path.replace("\\", "/");

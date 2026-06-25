@@ -56,4 +56,14 @@ public class CourseMaterialController {
         materialService.deleteMaterial(materialId);
         return ResponseEntity.noContent().build();
     }
+
+    @PutMapping(value = "/{materialId}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    @PreAuthorize("hasAnyRole('TEACHER', 'ADMIN')")
+    @Operation(summary = "Actualizar material didáctico por ID (título y/o archivo)")
+    public ResponseEntity<CourseMaterialDTO> updateMaterial(
+            @PathVariable Long materialId,
+            @RequestParam("title") String title,
+            @RequestParam(value = "file", required = false) MultipartFile file) {
+        return ResponseEntity.ok(materialService.updateMaterial(materialId, title, file));
+    }
 }

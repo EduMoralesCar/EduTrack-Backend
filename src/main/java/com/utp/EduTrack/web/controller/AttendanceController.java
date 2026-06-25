@@ -59,4 +59,11 @@ public class AttendanceController {
     public ResponseEntity<List<AttendanceDTO>> getSectionAttendance(@PathVariable Long sectionId) {
         return ResponseEntity.ok(attendanceService.getSectionAttendance(sectionId));
     }
+
+    @GetMapping("/section/{sectionId}/justifications")
+    @PreAuthorize("hasAnyRole('TEACHER', 'ADMIN')")
+    @Operation(summary = "Obtener solicitudes de justificación de una sección")
+    public ResponseEntity<List<AttendanceJustificationDTO>> getSectionJustifications(@PathVariable Long sectionId) {
+        return ResponseEntity.ok(attendanceService.getSectionJustifications(sectionId));
+    }
 }
