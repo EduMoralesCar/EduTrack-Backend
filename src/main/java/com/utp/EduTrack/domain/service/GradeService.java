@@ -29,6 +29,13 @@ public class GradeService {
     private final UserRepository userRepository;
     private final EnrollmentRepository enrollmentRepository;
 
+    @org.springframework.context.annotation.Lazy
+    @org.springframework.beans.factory.annotation.Autowired
+    private EnrollmentService enrollmentService;
+
+    @org.springframework.beans.factory.annotation.Autowired
+    private NotificationService notificationService;
+
     @Transactional
     public GradeDTO recordGrade(GradeDTO dto) {
         if (dto.getScore() < 0.0 || dto.getScore() > 20.0) {
@@ -65,6 +72,14 @@ public class GradeService {
 
         Grade saved = gradeRepository.save(grade);
         dto.setId(saved.getId());
+
+        try {
+            enrollmentService.evaluateAcademicRisk(dto.getStudentId(), assignment.getSection().getId());
+            notificationService.sendNotification(student, "Se ha registrado una calificación de " + dto.getScore() + " en la evaluación '" + assignment.getName() + "'.");
+        } catch (Exception e) {
+            System.err.println("Warning evaluating academic risk / sending notification: " + e.getMessage());
+        }
+
         return dto;
     }
 
