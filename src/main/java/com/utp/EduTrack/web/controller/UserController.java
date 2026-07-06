@@ -5,6 +5,8 @@ import com.utp.EduTrack.domain.dto.UserCreateDTO;
 import com.utp.EduTrack.domain.dto.UserDTO;
 import com.utp.EduTrack.domain.dto.UserUpdateDTO;
 import com.utp.EduTrack.domain.service.UserService;
+import com.utp.EduTrack.domain.service.AuthService;
+import com.utp.EduTrack.security.UserPrincipal;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -25,6 +27,7 @@ import java.util.List;
 public class UserController {
 
     private final UserService userService;
+    private final AuthService authService;
 
     @GetMapping
     @PreAuthorize("hasRole('ADMIN')")
@@ -59,6 +62,15 @@ public class UserController {
     @Operation(summary = "Eliminar usuario")
     public ResponseEntity<Void> delete(@PathVariable Long id) {
         userService.delete(id);
+        return ResponseEntity.noContent().build();
+    }
+
+    @PutMapping("/change-password")
+    @PreAuthorize("isAuthenticated()")
+    @Operation(summary = "Cambiar propia contraseña", description = "Permite a cualquier usuario logueado cambiar su contraseña")
+    public ResponseEntity<Void> changePassword(@RequestParam("newPassword") String newPassword) {
+        UserPrincipal principal = authService.getCurrentPrincipal();
+        userService.changePassword(principal.getId(), newPassword);
         return ResponseEntity.noContent().build();
     }
 }
