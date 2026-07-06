@@ -71,6 +71,15 @@ public class UserService {
         userRepository.deleteById(id);
     }
 
+    public void changePassword(Long userId, String newPassword) {
+        if (newPassword == null || newPassword.isBlank()) {
+            throw new BusinessException("La contraseña no puede estar vacía");
+        }
+        User user = getUserEntity(userId);
+        user.setPassword(passwordEncoder.encode(newPassword));
+        userRepository.save(user);
+    }
+
     public User getUserEntity(Long id) {
         return userRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Usuario no encontrado con id: " + id));
