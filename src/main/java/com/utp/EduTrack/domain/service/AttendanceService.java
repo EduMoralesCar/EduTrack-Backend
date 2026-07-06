@@ -32,6 +32,13 @@ public class AttendanceService {
     private final UserRepository userRepository;
     private final FileStorageService fileStorageService;
 
+    @org.springframework.context.annotation.Lazy
+    @org.springframework.beans.factory.annotation.Autowired
+    private EnrollmentService enrollmentService;
+
+    @org.springframework.beans.factory.annotation.Autowired
+    private NotificationService notificationService;
+
     @Transactional
     public AttendanceDTO recordAttendance(AttendanceDTO dto) {
         Section section = sectionRepository.findById(dto.getSectionId())
@@ -62,6 +69,16 @@ public class AttendanceService {
 
         Attendance saved = attendanceRepository.save(attendance);
         dto.setId(saved.getId());
+
+        try {
+            enrollmentService.evaluateAcademicRisk(dto.getStudentId(), section.getId());
+            if (dto.getStatus() == com.utp.EduTrack.persistance.entity.AttendanceStatus.AUSENTE) {
+                notificationService.sendNotification(student, "Se ha registrado una inasistencia en la sección " + section.getCode() + " para la fecha " + dto.getDate() + ".");
+            }
+        } catch (Exception e) {
+            System.err.println("Warning evaluating risk or sending attendance notification: " + e.getMessage());
+        }
+
         return dto;
     }
 
@@ -111,6 +128,18 @@ public class AttendanceService {
             Attendance attendance = justification.getAttendance();
             attendance.setStatus(com.utp.EduTrack.persistance.entity.AttendanceStatus.AUSENTE);
             attendanceRepository.save(attendance);
+        }
+
+        try {
+            Attendance attendance = justification.getAttendance();
+            enrollmentService.evaluateAcademicRisk(attendance.getStudent().getId(), attendance.getSection().getId());
+            
+            String statusString = (status == JustificationStatus.APROBADO) ? "APROBADA" : "RECHAZADA";
+            notificationService.sendNotification(attendance.getStudent(), 
+                    "Tu solicitud de justificación para la fecha " + attendance.getDate() + 
+                    " en la sección " + attendance.getSection().getCode() + " ha sido " + statusString + ".");
+        } catch (Exception e) {
+            System.err.println("Warning evaluating risk or sending justification resolution notification: " + e.getMessage());
         }
     }
 

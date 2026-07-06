@@ -50,6 +50,15 @@ public class EnrollmentController {
         return ResponseEntity.status(HttpStatus.CREATED).body(enrollmentService.enroll(request));
     }
 
+    @PutMapping("/{id}/status")
+    @PreAuthorize("hasAnyRole('ADMIN','TEACHER')")
+    @Operation(summary = "Actualizar estado de matrícula (ADMIN / TEACHER)", description = "Estados permitidos: ENROLLED, WITHDRAWN, AT_RISK")
+    public ResponseEntity<EnrollmentDTO> updateStatus(
+            @PathVariable Long id, 
+            @RequestParam("status") com.utp.EduTrack.persistance.entity.EnrollmentStatus status) {
+        return ResponseEntity.ok(enrollmentService.updateStatus(id, status));
+    }
+
     @DeleteMapping("/{id}")
     @PreAuthorize("hasRole('ADMIN')")
     @Operation(summary = "Eliminar matrícula (ADMIN)")
