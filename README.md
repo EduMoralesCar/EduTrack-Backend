@@ -14,7 +14,7 @@
 
 <div align="center">
   <h3>
-    <a href="https://edutrack-backend-1nvs.onrender.com/swagger-ui/index.html#/Evaluaciones%20(Assignments)">🚀 VER DOCUMENTACIÓN INTERACTIVA (SWAGGER UI)</a>
+    <a href="http://13.59.189.231/swagger-ui/index.html">🚀 VER DOCUMENTACIÓN INTERACTIVA (SWAGGER UI)</a>
   </h3>
 </div>
 
@@ -28,7 +28,7 @@ El backend de **EduTrack** es el motor de datos y lógica de negocio de la plata
 
 ## ✨ Funcionalidades del Backend (Entregas Completas: Avance 1 - Avance 3)
 
-El proyecto expone endpoints RESTful estructurados y protegidos mediante autenticación de **Tokens JWT** (JSON Web Tokens) firmados digitalmente, utilizando el patrón **DTO (Data Transfer Objects)** para evitar la exposición directa de entidades de base de datos relacional (**PostgreSQL**).
+El proyecto expone endpoints RESTful HTTP estructurados y protegidos mediante autenticación de **Tokens JWT** (JSON Web Tokens) firmados digitalmente, utilizando el patrón **DTO (Data Transfer Objects)** para evitar la exposición directa de entidades de base de datos relacional (**PostgreSQL**).
 
 ### 🔒 1. Seguridad, Sesión y Autenticación (Avance 1)
 - **Inicio de Sesión Seguro (RF 02):** Autenticación en `POST /api/auth/login` con encriptación Bcrypt y generación de tokens JWT.
@@ -78,7 +78,7 @@ Para probar los endpoints en la ruta `/swagger-ui/index.html`, primero debes aut
 - **Seguridad:** Spring Security (Bcrypt & JWT)
 - **Construcción y Dependencias:** Maven
 - **Documentación:** Swagger UI (OpenAPI 3)
-- **Despliegue:** Render
+- **Despliegue:** AWS (Amazon Web Services) / EC2 & RDS
 
 ---
 
