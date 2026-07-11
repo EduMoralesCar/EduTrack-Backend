@@ -31,3 +31,6 @@ build/
 
 ### VS Code ###
 .vscode/
+
+# Private deployment documentation (credentials & IPs)
+/docs/private/
